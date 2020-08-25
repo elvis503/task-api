@@ -5,7 +5,7 @@ const userRouter = require("./routers/user.js")
 const taskRouter = require("./routers/task.js")
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(express.json())
 app.use(userRouter);
@@ -14,6 +14,7 @@ app.use(taskRouter);
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
 })
+
 
 const Task = require("./models/task.js");
 const User = require("./models/user.js");
@@ -25,8 +26,8 @@ const main = async () => {
     // console.log(task.owner);
 
     //Finding the tasks of an owner by the owner id
-    const user = await User.findById("5f3c58ae53b1d38098135b66");
-    await user.populate("tasks").execPopulate();
+    // const user = await User.findById("5f3c58ae53b1d38098135b66");
+    // await user.populate("tasks").execPopulate();
     //console.log(user.tasks)
 }
  
@@ -62,3 +63,23 @@ main();
 // }
 
 //jwtFunction();
+
+// //Using MULTER to upload files
+
+// const multer = require("multer");
+// const upload = multer({
+//     dest: 'images',
+//     //Limit files to under 1 Mb
+//     limits: {
+//         fileSize: 1000000
+//     },
+//     //Filer files to only accept .pdf
+//     fileFilter(req, file, cb){
+//         const regExp = /\.(doc|docx)$/;
+//         if(!file.originalname.match(regExp)){
+//             return cb(new Error("Please upload a PDF"))
+//         }
+
+//         cb(undefined, true);
+//     }
+// })

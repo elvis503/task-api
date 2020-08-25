@@ -54,7 +54,10 @@ const userSchema = new mongoose.Schema({
            type: String,
            required: true,
        } 
-    }]
+    }],
+    avatar: {
+        type: Buffer
+    }
 }, {
     timestamps: true
 })
@@ -82,19 +85,21 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user
 }
 
-userSchema.methods.toJSON= function () {
+userSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject();
 
     delete userObject.password;
     delete userObject.tokens;
+    delete userObject.avatar;
+    
     return userObject;
 }
 
 //Generate Authentication Token when logging in
 userSchema.methods.generateAuthToken = async function (){
     const user = this;
-    const token = jwt.sign({_id: user._id.toString()}, "thisismysecret");
+    const token = jwt.sign({_id: user._id.toString()}, process.env.JWT_SECRET);
 
     user.tokens = user.tokens.concat({ token });
     await user.save();
@@ -119,8 +124,6 @@ userSchema.pre("remove", async function(next){
 
     next();
 })
-
-
 
 //Defining a model - User
 const User = mongoose.model("User", userSchema)
